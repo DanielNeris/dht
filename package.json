@@ -1,13 +1,18 @@
 {
   "name": "dht",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "node --test"
+  "description": "Kademlia DHT from scratch over UDP, zero dependencies",
+  "main": "lib/node.js",
+  "bin": {
+    "dht": "bin/dht.js"
   },
-  "keywords": [],
-  "author": "",
+  "scripts": {
+    "test": "node --test",
+    "sim": "node sim/hops.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "license": "ISC",
   "type": "commonjs"
 }

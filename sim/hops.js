@@ -1,5 +1,10 @@
 // Spin up N real UDP nodes on localhost, in one process, and measure the DHT.
-// Usage: node sim/hops.js [nodes=200] [alpha=3]
+// Every result is checked against the truth, computed by looking at all nodes.
+//
+//   node sim/hops.js [nodes=200] [alpha=3]
+//
+// macOS limits open files: run `ulimit -n 4096` first for 1000+ nodes.
+
 const { DHTNode } = require('../lib/node')
 const { randomId, hash, compareDistance } = require('../lib/id')
 
@@ -30,7 +35,7 @@ async function main() {
   const sizes = nodes.map(n => n.table.size)
   console.log(`table size: avg ${avg(sizes).toFixed(1)}, min ${Math.min(...sizes)}, max ${Math.max(...sizes)}  (${(avg(sizes) / N * 100).toFixed(1)}% of the network)`)
 
-  // 3) lookups for random targets, checked against the real k closest
+  // 3) lookups for random targets, compared with the real k closest
   const rounds = []
   const accuracy = []
   for (let i = 0; i < LOOKUPS; i++) {
@@ -56,7 +61,7 @@ async function main() {
   for (let i = 0; i < 50; i++) {
     await pick(nodes).put(`key-${i}`, `value-${i}`)
     const reader = pick(nodes)
-    reader.storage.delete(hash(`key-${i}`).toString('hex')) // force it to go to the network
+    reader.storage.delete(hash(`key-${i}`).toString('hex')) // force the get to go to the network
     const res = await reader.get(`key-${i}`)
     if (res.value === `value-${i}`) ok++
     getRounds.push(res.rounds)
