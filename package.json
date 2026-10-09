@@ -8,10 +8,11 @@
   },
   "scripts": {
     "test": "node --test",
+    "coverage": "node --test --experimental-test-coverage --test-coverage-include='lib/**' --test-coverage-include='bin/**' --test-coverage-include='sim/**' --test-coverage-lines=100 --test-coverage-branches=100 --test-coverage-functions=100",
     "sim": "node sim/hops.js"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "license": "ISC",
   "type": "commonjs"

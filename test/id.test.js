@@ -1,6 +1,6 @@
 const test = require('node:test')
 const assert = require('node:assert')
-const { randomId, hash, distance, compareDistance, commonPrefixLength } = require('../lib/id')
+const { randomId, hash, parseId, distance, compareDistance, commonPrefixLength } = require('../lib/id')
 
 test('randomId returns 32 random bytes', () => {
   const a = randomId()
@@ -56,4 +56,14 @@ test('each bucket gets about half of the previous one', () => {
   assert.ok(Math.abs(counts[0] / N - 0.5) < 0.02)
   assert.ok(Math.abs(counts[1] / N - 0.25) < 0.02)
   assert.ok(Math.abs(counts[2] / N - 0.125) < 0.02)
+})
+
+test('parseId accepts 64 hex chars and rejects anything else', () => {
+  const id = randomId()
+  assert.ok(parseId(id.toString('hex')).equals(id))
+  assert.strictEqual(parseId(42), null)
+  assert.strictEqual(parseId(null), null)
+  assert.strictEqual(parseId('abc'), null)
+  assert.strictEqual(parseId('z'.repeat(64)), null)
+  assert.strictEqual(parseId(id.toString('hex').toUpperCase()), null) // lowercase only
 })

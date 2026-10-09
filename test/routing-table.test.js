@@ -59,3 +59,16 @@ test('closest returns the n nearest peers in order', () => {
   const expected = table.buckets.flat().sort((a, b) => compareDistance(a.id, b.id, target)).slice(0, 10)
   assert.deepStrictEqual(table.closest(target, 10).map(p => p.id), expected.map(p => p.id))
 })
+
+test('remove ignores ourselves and unknown peers', () => {
+  const self = randomId()
+  const table = new RoutingTable(self)
+  assert.strictEqual(table.remove(self), false)
+  assert.strictEqual(table.remove(randomId()), false)
+})
+
+test('closest returns k peers by default', () => {
+  const table = new RoutingTable(randomId(), 5)
+  for (let i = 0; i < 200; i++) table.add(peer(randomId()))
+  assert.strictEqual(table.closest(randomId()).length, 5)
+})
